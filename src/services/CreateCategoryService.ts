@@ -1,5 +1,5 @@
-import Category from "../models/Category";
-import { getRepository } from "typeorm";
+import { getRepository } from 'typeorm';
+import Category from '../models/Category';
 
 interface Request {
   category: string;
@@ -9,21 +9,29 @@ class CreateCategoryService {
   public async execute({ category }: Request): Promise<Category> {
     const categoryRepository = getRepository(Category);
     const title = category;
-    const titleCapitalize = title.toLowerCase()
-    .split(' ')
-    .map((title) => title.charAt(0).toUpperCase() + title.substring(1))
-    .join(' ');
-    
-    const categoryExits = categoryRepository.findOne({where: { title: titleCapitalize }});
+    const titleCapitalize = title
+      .toLowerCase()
+      .split(' ')
+      .map(
+        titleUpper =>
+          titleUpper.charAt(0).toUpperCase() + titleUpper.substring(1),
+      )
+      .join(' ');
 
-    if(categoryExits){
-      const category = categoryRepository.create({title: titleCapitalize});
+    const categoryExits = await categoryRepository.findOne({
+      where: { title: titleCapitalize },
+    });
 
-      return category;
+    if (categoryExits) {
+      return categoryExits;
     }
 
-    return categoryExits;
+    const categoryCreate = categoryRepository.create({
+      title: titleCapitalize,
+    });
+    await categoryRepository.save(categoryCreate);
 
+    return categoryCreate;
   }
 }
 

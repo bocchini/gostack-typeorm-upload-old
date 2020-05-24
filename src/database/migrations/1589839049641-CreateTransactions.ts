@@ -21,7 +21,7 @@ export default class CreateTransactions1589839049641
           },
           {
             name: 'value',
-            type: 'decimal',
+            type: 'float',
             isNullable: false,
           },
           {
